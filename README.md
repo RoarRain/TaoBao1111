@@ -2,11 +2,17 @@
 
 ### 使用说明
 
+---
+
 本脚本基于[auto.js](https://github.com/hyb1996/Auto.js)完成
+
 下载 JS 脚本并用 AutojsApp 内运行即可
+
 也可直接下载[Apk](https://github.com/RoarRain/2020TaoBao1111/releases/tag/V1.0.0) Apk 包含淘宝、支付宝赚喵币 ps: apk 可能会有风险提示，介意者慎用
 
 注意: 需要给相应软件(淘宝、支付宝)开启无障碍模式才能正常使用
+
+---
 
 ### 感谢
 
