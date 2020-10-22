@@ -43,10 +43,39 @@ app.startActivity({
   packageName: "com.eg.android.AlipayGphone",
 });
 sleep(3000);
-var mainGetCoinBtn = text("20000喵币点击领取").findOne(3000);
+var mainGetCoinBtn = textContains("喵币点击领取").findOne(3000);
 if (mainGetCoinBtn) {
   mainGetCoinBtn.click();
   sleep(500);
+}
+var reg = /我的喵币.*\d+/;
+var vReg = /\d+/g;
+let clickCatCount = 0;
+let catBtn = text("撸猫").findOne(1000);
+let coinCountBtn = textMatches(reg).findOne(3000);
+let coinCount = 0;
+if (coinCountBtn) {
+  coinCount = coinCountBtn.text().match(vReg)[0];
+}
+while (clickCatCount < 300) {
+  if (catBtn) {
+    sleep(500);
+    catBtn.click();
+    sleep(3500);
+    let newCoinCountBtn = textMatches(reg).findOne(3000);
+    let newCoinCount = 0;
+    if (coinCountBtn) {
+      newCoinCount = newCoinCountBtn.text().match(vReg)[0];
+    }
+    if (newCoinCount > coinCount) {
+      coinCount = newCoinCount;
+      clickCatCount++;
+    } else {
+      break;
+    }
+  } else {
+    break;
+  }
 }
 sleep(500);
 if (clickGetMiaoCoin()) {
