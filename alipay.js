@@ -3,12 +3,72 @@
  * taobao 20201111
  */
 
+toast("检测是否开启无障碍模式");
+auto.waitFor();
+app.startActivity({
+  action: "android.intent.action.VIEW",
+  data: "alipays://platformapi/startapp?appId=68687502",
+  packageName: "com.eg.android.AlipayGphone",
+});
+textContains("撸猫").waitFor();
+
+/**
+ * 领喵币
+ */
+var mainGetCoinBtn = textContains("喵币点击领取").findOne(3000);
+if (mainGetCoinBtn) {
+  mainGetCoinBtn.click();
+  sleep(500);
+}
+
+/**
+ * 撸猫
+ */
+var reg = /我的喵币.*\d+/;
+var vReg = /\d+/g;
+let catBtn = textContains("撸猫").findOne(2000);
+let coinCountBtn = textMatches(reg).findOne(3000);
+
+if (catBtn && coinCountBtn) {
+  let coinCount = coinCountBtn.text().match(vReg)[0];
+  toast(coinCount);
+  while (true) {
+    let random = parseInt(Math.random() * 10);
+    strokedCat(catBtn, random);
+    toast(random);
+    sleep(random * 500 + 3000);
+    let newCoinCountBtn = textMatches(reg).findOne(3000);
+    let newCoinCount = 0;
+    if (newCoinCountBtn) {
+      newCoinCount = newCoinCountBtn.text().match(vReg)[0];
+      toast(newCoinCount);
+    }
+    if (newCoinCount > coinCount) {
+      coinCount = newCoinCount;
+    } else {
+      break;
+    }
+  }
+}
+
+sleep(500);
+
+/**
+ * 浏览等赚喵币
+ */
+if (clickGetMiaoCoin()) {
+  startGetMiaoCoinTask();
+} else {
+  toast("进入赚喵币任务失败");
+}
+
 function startGetMiaoCoinTask() {
   while (true) {
     var target = text("逛一逛").findOne(2000) || text("签到").findOne(2000);
     if (target == null) {
-      toast("浏览任务完成");
       back();
+      alert("任务完成！ 其它任务请手动完成，有问题直接提Issues");
+      exit();
       sleep(1000);
       break;
     }
@@ -35,51 +95,11 @@ function clickGetMiaoCoin() {
   }
 }
 
-toast("检测是否开启无障碍模式");
-auto.waitFor();
-app.startActivity({
-  action: "android.intent.action.VIEW",
-  data: "alipays://platformapi/startapp?appId=68687502",
-  packageName: "com.eg.android.AlipayGphone",
-});
-sleep(3000);
-var mainGetCoinBtn = textContains("喵币点击领取").findOne(3000);
-if (mainGetCoinBtn) {
-  mainGetCoinBtn.click();
-  sleep(500);
-}
-var reg = /我的喵币.*\d+/;
-var vReg = /\d+/g;
-let clickCatCount = 0;
-let catBtn = text("撸猫").findOne(1000);
-let coinCountBtn = textMatches(reg).findOne(3000);
-let coinCount = 0;
-if (coinCountBtn) {
-  coinCount = coinCountBtn.text().match(vReg)[0];
-}
-while (clickCatCount < 300) {
-  if (catBtn) {
+function strokedCat(catBtn, clickCount) {
+  let count = 0;
+  while (count < clickCount) {
     sleep(500);
     catBtn.click();
-    sleep(3500);
-    let newCoinCountBtn = textMatches(reg).findOne(3000);
-    let newCoinCount = 0;
-    if (coinCountBtn) {
-      newCoinCount = newCoinCountBtn.text().match(vReg)[0];
-    }
-    if (newCoinCount > coinCount) {
-      coinCount = newCoinCount;
-      clickCatCount++;
-    } else {
-      break;
-    }
-  } else {
-    break;
+    count++;
   }
-}
-sleep(500);
-if (clickGetMiaoCoin()) {
-  startGetMiaoCoinTask();
-} else {
-  toast("进入赚喵币任务失败");
 }
